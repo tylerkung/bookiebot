@@ -2,6 +2,7 @@ const { REST } = require('@discordjs/rest')
 const { Client, GatewayIntentBits, Partials } = require('discord.js');
 const { Routes } = require('discord-api-types/v9')
 const client = new Client({ intents: [GatewayIntentBits.Guilds], partials: [Partials.Channel] });
+const { mongoClient, connectToMongoDB, closeMongoDBConnection } = require('./database.js');
 
 const fs = require('fs')
 const path = require('path')
@@ -13,10 +14,10 @@ require('dotenv').config({
     path: path.join(__dirname, '.env'),
 })
 
-const token =
-    process.env.NODE_ENV === 'development'
-        ? process.env.TOKEN_DEV
-        : process.env.TOKEN_PROD
+const token = "MTE1MTAwMzAyODQ4MTEyNjQ0MQ.G6F1Vv.fD5XEyGskABc91O-yAaLhKO8KSk-nbNS6UPqH0";
+    // process.env.NODE_ENV === 'development'
+    //     ? process.env.TOKEN_DEV
+    //     : process.env.TOKEN_PROD
 
 client.once('ready', () => {
     console.log('Bot Ready!')
@@ -46,6 +47,7 @@ client.once('ready', () => {
         .catch(console.error)
 })
 
+
 client.on('interactionCreate', async interaction => {
     if (!interaction.isCommand()) return
     const { commandName } = interaction
@@ -53,4 +55,18 @@ client.on('interactionCreate', async interaction => {
     selectedCommand.init(interaction, client)
 })
 
+client.on('ready', () => {
+  console.log(`Logged in as ${client.user.tag}`);
+  connectToMongoDB();
+});
+
 client.login(token)
+
+// Listen for process termination events and close MongoDB connection
+process.on('SIGINT', () => {
+    console.log('Received SIGINT. Closing MongoDB connection.');
+    closeMongoDBConnection().then(() => {
+        console.log('MongoDB connection closed.');
+        process.exit(0);
+    });
+});
