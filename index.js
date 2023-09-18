@@ -13,7 +13,7 @@ let commands = []
 // require('dotenv').config({
 //     path: path.join(__dirname, '.env'),
 // })
-require('dotenv').config({ path: path.resolve(__dirname, 'example.env') })
+require('dotenv').config({ path: path.resolve(__dirname, '.env') })
 
 const token = process.env.TOKEN_PROD;
 

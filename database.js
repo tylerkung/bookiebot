@@ -3,7 +3,7 @@
 //     path: path.join(__dirname, '.env'),
 // })
 const path = require('path')
-require('dotenv').config({ path: path.resolve(__dirname, 'example.env') })
+require('dotenv').config({ path: path.resolve(__dirname, '.env') })
 const { MongoClient, ServerApiVersion } = require('mongodb');
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const mongoClient = new MongoClient(process.env.DB_URI, {
